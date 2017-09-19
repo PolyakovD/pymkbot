@@ -2,6 +2,7 @@ import numpy as np
 from PIL import ImageGrab
 import cv2
 
+from pymkbot.features.my_position_feature import MyPositionFeature
 from pymkbot.utils.async_executor import AsyncExecutor
 
 
@@ -20,8 +21,10 @@ class AsyncImageGrabber:
             cv2.destroyAllWindows()
 
     def _record_screen_forever(self):
+        position_feature = MyPositionFeature()
         while True:
             self._current_img = np.array(ImageGrab.grab(bbox=(0, 30, 320, 270)))
+            position_feature.get_value(self._current_img)
             self._debug_show_image_scaled()
             if self._callback:
                 self._callback()
