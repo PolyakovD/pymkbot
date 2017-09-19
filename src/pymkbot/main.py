@@ -1,12 +1,9 @@
 import time
 
 from pymkbot.image.async_image_grab import AsyncImageGrabber
-from pymkbot.strategy.empty_strategy import EmptyStrategy
 import pymkbot.keyboard.directkeys as keys
 
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, VK_CAPITAL
-from pymkbot.strategy.lu_keng_naive_strategy import LuKengNaiveStrategy
-from pymkbot.strategy.naive_strategy import NaiveStrategy
 from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.utils.async_executor import AsyncExecutor
 
