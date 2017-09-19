@@ -11,7 +11,7 @@ SendInput = ctypes.windll.user32.SendInput
 
 HIGH_KICK = 0x42
 LOW_KICK = 0x50
-HIGH_PUNCH = 0x55
+HIGH_PUNCH = 0x16
 LOW_PUNCH = 0x4a
 BLOCK = 0x20
 STEP_IN = 0x46
