@@ -2,6 +2,9 @@ import numpy as np
 from PIL import ImageGrab
 import cv2
 
+from pymkbot.keyboard.directkeys import W, A, S, D, press_key, release_key
+
+
 def screen_record():
     while True:
         ps = np.array(ImageGrab.grab(bbox=(0, 30, 320, 270)))
@@ -11,4 +14,11 @@ def screen_record():
             cv2.destroyAllWindows()
             break
 
+            
+def do_some_moves():
+    while (True):
+        time.sleep(1)
+        release_key(0x11)
+
+        
 screen_record()
