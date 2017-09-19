@@ -1,22 +1,23 @@
 import time
-import cv2
-import numpy as np
-from PIL import ImageGrab
+import msvcrt
 
-from pymkbot.strategy.empty_stategy import EmptyStrategy
-
-
-def screen_record(strategy):
-    while True:
-        ps = np.array(ImageGrab.grab(bbox=(0, 30, 320, 270)))
-        printscreen = cv2.resize(ps, dsize=(640, 480), interpolation=cv2.INTER_NEAREST)
-        cv2.imshow('window', cv2.cvtColor(printscreen, cv2.COLOR_BGR2RGB))
-        strategy.do_action()
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
-            break
+from pymkbot.image.async_image_grab import AsyncImageGrabber
+from pymkbot.stategy.empty_strategy import EmptyStrategy
 
 
 if __name__ == "__main__":
-    time.sleep(5)
-    screen_record(EmptyStrategy())
+
+grabber = AsyncImageGrabber()
+grabber.begin_recording()
+
+time.sleep(5)
+strat = EmptyStrategy()
+#grabber.set_callback(strat.get_action)
+
+
+
+while True:
+    x = get_capslock_state()
+    if x % 2:
+        strat.get_action()
+    time.sleep(0.05)
