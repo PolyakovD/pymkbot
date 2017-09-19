@@ -9,8 +9,8 @@ class AsyncImageGrabber:
     def __init__(self):
         self._executor = AsyncExecutor()
         self._callback = None
-        self._in_size = [320, 240]
-        self._out_size = [680, 480]
+        self._in_size = (320, 240)
+        self._out_size = (680, 480)
         self._current_img = None
 
     def _debug_show_image_scaled(self):
