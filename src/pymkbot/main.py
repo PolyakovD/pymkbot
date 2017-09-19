@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import ImageGrab
 import cv2
+import time
 
 from pymkbot.keyboard.directkeys import W, A, S, D, press_key, release_key
 
