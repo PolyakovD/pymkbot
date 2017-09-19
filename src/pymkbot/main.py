@@ -7,6 +7,7 @@ import pymkbot.keyboard.directkeys as keys
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, VK_CAPITAL
 from pymkbot.strategy.lu_keng_naive_strategy import LuKengNaiveStrategy
 from pymkbot.strategy.naive_strategy import NaiveStrategy
+from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.utils.async_executor import AsyncExecutor
 
 if __name__ == "__main__":
@@ -15,9 +16,9 @@ if __name__ == "__main__":
     grabber.begin_recording()
 
     #time.sleep(5)
-    strat = LuKengNaiveStrategy(keys.kbd_player1)
+    strat = RandomMoveStrategy(keys.kbd_player1)
     time.sleep(1)
-    strat2 = LuKengNaiveStrategy(keys.kbd_player2)
+    strat2 = RandomMoveStrategy(keys.kbd_player2)
     #grabber.set_callback(strat.get_action)
     keybd_switch = KeyStateGetter()
 
