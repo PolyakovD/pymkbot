@@ -1,6 +1,6 @@
 import datetime
 
-from pymkbot.keyboard.directkeys import W, A, S, D, press_key, release_key
+import pymkbot.keyboard.directkeys as keys
 
 
 class Strategy:
@@ -12,23 +12,23 @@ class Strategy:
     def _attack(self):
         if self._current_action == 'defence':
             self._stop_defence()
-        #release_key(U)
-        #press_key(U)
-        press_key(D)
+        keys.release_key(keys.HIGH_PUNCH)
+        keys.press_key(keys.HIGH_PUNCH)
+        keys.press_key(keys.RIGHT)
 
     def _defence(self):
         if self._current_action == 'attack':
             self._stop_attack()
-        press_key(A)
-        press_key(W)
+        keys.press_key(keys.LEFT)
+        keys.press_key(keys.UP)
 
     def _stop_attack(self):
-        #release_key(U)
-        release_key(D)
+        keys.release_key(keys.HIGH_PUNCH)
+        keys.release_key(keys.RIGHT)
 
     def _stop_defence(self):
-        release_key(A)
-        release_key(W)
+        keys.release_key(keys.LEFT)
+        keys.release_key(keys.UP)
 
     def get_action(self):
         t = datetime.now()

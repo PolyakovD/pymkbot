@@ -19,4 +19,4 @@ def screen_record():
 
 time.sleep(5)
 strat =  Strategy()
-asyncio.ensure_future(screen_record())
+screen_record()
