@@ -1,10 +1,11 @@
 from datetime import datetime
+from pymkbot.strategy.strategy import Strategy
 import time
 
 import pymkbot.keyboard.directkeys as keys
 
 
-class Strategy:
+class NaiveStrategy(Strategy):
     def __init__(self):
         self._begin_time = datetime.now()
         self._strat_len = 5.0
@@ -17,8 +18,6 @@ class Strategy:
         time.sleep(0.05)
         keys.press_key(keys.HIGH_PUNCH)
         keys.press_key(keys.RIGHT)
-        #print("u")
-        #time.sleep(0.1)
         self._current_action = 'attack'
 
     def _defence(self):
@@ -38,7 +37,7 @@ class Strategy:
         keys.release_key(keys.UP)
         time.sleep(0.1)
 
-    def get_action(self):
+    def do_action(self):
         t = datetime.now()
         delta = t - self._begin_time
         t_beg = (delta.seconds + delta.microseconds / 1E6) % self._strat_len
