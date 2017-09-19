@@ -1,63 +1,39 @@
 from datetime import datetime
 from pymkbot.strategy.strategy import Strategy
 import time
+import random
 
 import pymkbot.keyboard.directkeys as keys
 
 
-class LuKengNaiveStrategy(Strategy):
+moves = ['LEFT', 'RIGHT', 'UP', 'DOWN', 'BLOCK']
+attacks = ['HIGH_KICK', 'LOW_KICK', 'HIGH_PUNCH', 'LOW_PUNCH']
+
+
+class RandomMoveStrategy(Strategy):
     def __init__(self, key_bindings):
         super().__init__(key_bindings)
         self._begin_time = datetime.now()
-        self._strat_len = 2.0
-        self._current_action = 'attack'
+        self._strat_len = 0.0
 
-    def _attack(self):
-        keys.press_key(self._key_bindings['RIGHT'])
+    def _random_move(self):
+        move = self._key_bindings[random.choice(moves)]
+        keys.press_key(move)
         time.sleep(0.05)
-        keys.release_key(self._key_bindings['RIGHT'])
+        keys.release_key(move)
         time.sleep(0.05)
-        keys.press_key(self._key_bindings['RIGHT'])
-        time.sleep(0.05)
-        keys.release_key(self._key_bindings['RIGHT'])
-        time.sleep(0.05)
-        keys.release_key(self._key_bindings['HIGH_KICK'])
-        time.sleep(0.05)
-        keys.press_key(self._key_bindings['HIGH_KICK'])
-        self._current_action = 'attack'
 
-    def _defence(self):
-        keys.press_key(self._key_bindings['LEFT'])
+    def _random_attack(self):
+        attack = self._key_bindings[random.choice(attacks)]
+        keys.press_key(attack)
         time.sleep(0.05)
-        keys.release_key(self._key_bindings['LEFT'])
+        keys.release_key(attack)
         time.sleep(0.05)
-        keys.press_key(self._key_bindings['LEFT'])
-        time.sleep(0.05)
-        keys.release_key(self._key_bindings['LEFT'])
-        time.sleep(0.05)
-        keys.release_key(self._key_bindings['HIGH_KICK'])
-        time.sleep(0.05)
-        keys.press_key(self._key_bindings['HIGH_KICK'])
-        self._current_action = 'defence'
-
-    def _stop_attack(self):
-        keys.release_key(self._key_bindings['HIGH_PUNCH'])
-        keys.release_key(self._key_bindings['RIGHT'])
-        time.sleep(0.1)
-
-    def _stop_defence(self):
-        keys.release_key(self._key_bindings['LEFT'])
-        keys.release_key(self._key_bindings['UP'])
-        time.sleep(0.1)
 
     def do_action(self):
-        t = datetime.now()
-        delta = t - self._begin_time
-        t_beg = (delta.seconds + delta.microseconds / 1E6) % self._strat_len
-        if t_beg > (self._strat_len * 0.5):
-            self._defence()
-        else:
-            self._attack()
+        self._random_move()
+        self._random_move()
+        self._random_attack()
 
 
 
