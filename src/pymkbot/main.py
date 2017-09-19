@@ -3,7 +3,7 @@ from PIL import ImageGrab
 import cv2
 import time
 
-from pymkbot.keyboard.directkeys import W, A, S, D, press_key, release_key
+import pymkbot.keyboard.directkeys as keys
 
 
 def screen_record():
@@ -17,9 +17,9 @@ def screen_record():
 
             
 def do_some_moves():
-    while (True):
+    while True:
         time.sleep(1)
-        release_key(0x11)
+        keys.release_key(0x11)
 
         
 screen_record()

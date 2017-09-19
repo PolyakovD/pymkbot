@@ -9,10 +9,19 @@ import time
 
 SendInput = ctypes.windll.user32.SendInput
 
-W = 0x11
-A = 0x1E
-S = 0x1F
-D = 0x20
+HIGH_KICK = 0x42
+LOW_KICK = 0x50
+HIGH_PUNCH = 0x55
+LOW_PUNCH = 0x4a
+BLOCK = 0x20
+STEP_IN = 0x46
+STEP_OUT = 0x52
+RUN = 0x51
+START = 0x54
+UP = 0x11
+LEFT = 0x1E
+DOWN = 0x1F
+RIGHT = 0x20
 
 # C struct redefinitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
