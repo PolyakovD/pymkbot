@@ -16,6 +16,8 @@ class AsyncImageGrabber:
     def _debug_show_image_scaled(self):
         img_scaled = cv2.resize(self._current_img, dsize=self._out_size, interpolation=cv2.INTER_NEAREST)
         cv2.imshow('window', cv2.cvtColor(img_scaled, cv2.COLOR_BGR2RGB))
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
 
     def _record_screen_forever(self):
         while True:
