@@ -6,3 +6,6 @@ class EmptyStrategy(Strategy):
     def do_action(self):
         pass
         # print("current time - " + str(datetime.now()))
+
+    def _release(self):
+        pass

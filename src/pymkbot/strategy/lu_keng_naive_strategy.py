@@ -50,6 +50,10 @@ class LuKengNaiveStrategy(Strategy):
         keys.release_key(self._key_bindings['UP'])
         time.sleep(0.1)
 
+    def _release(self):
+        for action in ['LEFT', 'RIGHT', 'HIGH_KICK']:
+            keys.release_key(self._key_bindings[action])
+
     def do_action(self):
         t = datetime.now()
         delta = t - self._begin_time

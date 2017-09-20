@@ -37,7 +37,7 @@ class AsyncConsumer:
 class AsyncImageProvider:
     def __init__(self):
         self._consumers = []
-        self._image_grabber = AsyncImageGrabber()
+        self._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270))
         self._image_grabber.set_callback(self._on_grabber_update)
         self._image_grabber.begin_recording()
 
