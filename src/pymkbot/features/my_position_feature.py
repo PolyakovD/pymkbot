@@ -4,13 +4,14 @@ from numpy.ma import absolute, nonzero
 from pymkbot.features.feature import Feature
 from pymkbot.utils.data.image_utils import make_kmeans, get_class_mask, get_histogram
 
-FRAC_MIN = 0.01
-FRAC_MAX = 0.1
+FRACTION_MIN = 0.01
+FRACTION_MAX = 0.1
 
 
 class MyPositionFeature(Feature):
-    def __init__(self):
+    def __init__(self, debug_mode=True):
         self.base_image = None
+        self._debug = debug_mode
         self.have_base = False
         self.num_pixels = 0
         self.histogram0 = None
@@ -30,7 +31,7 @@ class MyPositionFeature(Feature):
         mask_bool = mask.astype(np.bool)
         nonzero_pos = nonzero(mask)
         nonzero_num = len(nonzero_pos[0])
-        if FRAC_MIN * self.num_pixels < nonzero_num < FRAC_MAX * self.num_pixels:
+        if FRACTION_MIN * self.num_pixels < nonzero_num < FRACTION_MAX * self.num_pixels:
             data_set = np.vstack(nonzero_pos).T
             mask_label, self.centers = make_kmeans(data_set)
             mask_res = mask_bool.ravel()
@@ -45,15 +46,19 @@ class MyPositionFeature(Feature):
             red = (mask0 * 255).astype(np.uint8)
             green = (mask1 * 255).astype(np.uint8)
             diff_image = cv2.merge((red, green, mask))
-            for y, x in self.centers:
-                x = int(x)
-                y = int(y)
-                cv2.rectangle(diff_image, (x - 10, y - 10), (x + 10, y + 10), (255, 0, 0), 2)
 
-            cv2.imshow("windows2", diff_image)
-            if cv2.waitKey(25) & 0xFF == ord('q'):
-                cv2.destroyAllWindows()
-            ###
+            if self._debug:
+                self._debug_output(diff_image)
+
+    def _debug_output(self, diff_image):
+        for y, x in self.centers:
+            x = int(x)
+            y = int(y)
+            cv2.rectangle(diff_image, (x - 10, y - 10), (x + 10, y + 10), (255, 0, 0), 2)
+
+        cv2.imshow("windows2", diff_image)
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
 
     def get_value(self, image):
         if self.have_base:
