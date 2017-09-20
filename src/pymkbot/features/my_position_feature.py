@@ -3,7 +3,7 @@ import numpy as np
 from numpy.ma import absolute, nonzero
 from sklearn.cluster import KMeans
 
-from pymkbot.features.feature import Feature
+from pymkbot.features.feature_1 import Feature
 
 FRAC_MIN = 0.01
 FRAC_MAX = 0.1

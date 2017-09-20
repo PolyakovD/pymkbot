@@ -1,6 +1,6 @@
 import numpy as np
 
-from pymkbot.features.feature import Feature
+from pymkbot.features.feature_1 import Feature
 
 
 class HPFeature(Feature):
