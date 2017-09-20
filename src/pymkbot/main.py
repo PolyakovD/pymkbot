@@ -22,27 +22,27 @@ if __name__ == "__main__":
     params_config = read_config('config.yml')
 
     name_feature = NameFeature(params_config.nameplates_path)
-    create_image_provider([PositionFeature(), HPFeature(), name_feature], params_config.debug_image_size)
+    create_image_provider([PositionFeature(name_feature), HPFeature(), name_feature], params_config.debug_image_size)
 
     # image_provider.register_consumer(name_parser.process_image)
 
     keybd_switch = KeyStateGetter()
-    strategy1 = RandomMoveTeacherStrategy(0, keybd_switch)
+    strategy1 = RandomMoveStrategy(0, keybd_switch)
     time.sleep(1)
     strategy2 = RandomMoveStrategy(1, keybd_switch)
 
-    moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
-    moves_serializer.load()
+    # moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
+    # moves_serializer.load()
 
     keybd_shortcuts = KeyPressCallback()
-    keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
-    # keybd_shortcuts.add_key_callback(0x5A, name_feature._calibrate)
+    # keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
+    keybd_shortcuts.add_key_callback(0x5A, name_feature._calibrate)
 
     strategy1_executor = AsyncExecutor()
-    strategy1_executor.call_soon_threadsafe(strategy1.run_strategy, strategy1, SCROLL_LOCK)
+    strategy1_executor.call_soon_threadsafe(strategy1.run_strategy, SCROLL_LOCK)
 
     strategy2_executor = AsyncExecutor()
-    strategy2_executor.call_soon_threadsafe(strategy2.run_strategy, strategy2, CAPS_LOCK)
+    strategy2_executor.call_soon_threadsafe(strategy2.run_strategy, CAPS_LOCK)
 
     while True:
         time.sleep(0.05)

@@ -1,8 +1,7 @@
-import cv2
-import numpy as np
 import pickle
 
-from scipy.stats.mstats import chisquare
+import cv2
+import numpy as np
 
 
 class HistogramAnalyzer:
@@ -30,13 +29,3 @@ class HistogramAnalyzer:
             return 1, 0
 
         return None
-
-        # p_mat = np.array([[p1_1, p2_1], [p1_2, p2_2]])
-        # max_p = (np.argmax(p_mat) // 2, np.argmax(p_mat) % 2)
-        # if p_mat[(max_p[0] + 1) % 2, (max_p[1] +1) % 2] > p_mat[(max_p[0] + 1) % 2, max_p[1]]:
-        #     if p_mat == 0 or p_mat == 3:
-        #         return 0, 1
-        #     else:
-        #         return 1, 0
-        # else:
-        #     return None

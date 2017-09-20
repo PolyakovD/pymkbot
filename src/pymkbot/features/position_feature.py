@@ -1,37 +1,39 @@
 import cv2
 import numpy as np
 from numpy.ma import absolute, nonzero
+
 from pymkbot.features.feature import Feature
 from pymkbot.utils.data.histogram_analyzer import HistogramAnalyzer
 from pymkbot.utils.data.image_utils import make_kmeans, get_class_mask, get_histogram
 
 FRACTION_MIN = 0.01
-FRACTION_MAX = 0.1
+FRACTION_MAX = 0.05
 
 
 class PositionFeature(Feature):
     def get_name(self):
         return "position_feature"
 
-    def __init__(self, debug_mode=True):
-        self.base_image = None
+    def __init__(self, name_feature, debug_mode=True):
         self._debug = debug_mode
-        self.have_base = False
         self.num_pixels = 0
         self.histogram0 = None
         self.histogram1 = None
         self.centers = None
         self.analyzer = HistogramAnalyzer('character_histogram.pickle')
         self.name_feature = name_feature
+        self.images = []
 
-    def get_mask(self, image):
-        differential_image = absolute(cv2.blur(image, (5, 5)) - self.base_image)
-        differential_image = cv2.cvtColor(differential_image, cv2.COLOR_BGR2GRAY)
-        ret, mask = cv2.threshold(differential_image, 127, 255, cv2.THRESH_BINARY)
+    def get_mask(self):
+        diff_image = absolute(cv2.blur(self.images[1], (5, 5)) - cv2.blur(self.images[0], (5, 5)))
+        # diff_image = absolute(self.images[1] - self.images[0])
+        diff_image = cv2.cvtColor(diff_image, cv2.COLOR_BGR2GRAY)
+        ret, mask = cv2.threshold(diff_image, 127, 255, cv2.THRESH_BINARY)
         return mask
 
-    def get_histogram_centers(self, image):
-        diff_image = absolute(cv2.blur(image, (5, 5)) - self.base_image)
+    def get_histogram_centers(self):
+        diff_image = absolute(cv2.blur(self.images[1], (5, 5)) - cv2.blur(self.images[0], (5, 5)))
+        # diff_image = absolute(self.images[1] - self.images[0])
         diff_image = cv2.cvtColor(diff_image, cv2.COLOR_BGR2GRAY)
         ret, mask = cv2.threshold(diff_image, 127, 255, cv2.THRESH_BINARY)
         mask_bool = mask.astype(np.bool)
@@ -46,8 +48,8 @@ class PositionFeature(Feature):
             mask0 = get_class_mask(mask_res, mask_label, mask_int, mask_bool, 0)
             mask1 = get_class_mask(mask_res, mask_label, mask_int, mask_bool, 1)
 
-            self.histogram0 = get_histogram(image, mask0)
-            self.histogram1 = get_histogram(image, mask1)
+            self.histogram0 = get_histogram(self.images[1], mask0)
+            self.histogram1 = get_histogram(self.images[1], mask1)
 
             if self._debug:
                 self._debug_output(mask, mask0, mask1)
@@ -66,24 +68,25 @@ class PositionFeature(Feature):
             cv2.destroyAllWindows()
 
     def get_value(self, image):
-        if self.have_base:
-            first_name, second_name = self.name_feature.get_value(image)
-            if first_name is None or second_name is None:
-                return None
-            self.get_histogram_centers(image)
-            self.base_image = cv2.blur(image, (5, 5))
-
-            if self.histogram0 is None or self.histogram1 is None:
-                return None
-            new_order = self.analyzer.analyze(first_name, second_name, self.histogram0, self.histogram1)
-            if new_order is None:
-                return None
-            if new_order[0] == 0:
-                return self.centers[::-1], self.centers[::-1]
-            else:
-                return self.centers[::-1], self.centers[::-1]
-        else:
-            self.base_image = cv2.blur(image, (5, 5))
-            self.have_base = True
-            self.num_pixels = np.prod(image.shape)
+        first_name, second_name = self.name_feature.get_value(image)
+        if first_name is None or second_name is None:
             return None
+        if self.num_pixels == 0:
+            self.num_pixels = np.prod(image.shape)
+
+        self.images.append(image)
+        if len(self.images) == 1:
+            return None
+
+        self.get_histogram_centers()
+        self.images = []
+
+        if self.histogram0 is None or self.histogram1 is None:
+            return None
+        new_order = self.analyzer.analyze(first_name, second_name, self.histogram0, self.histogram1)
+        if new_order is None:
+            return None
+        if new_order[0] == 0:
+            return self.centers[::-1], self.centers[::-1]
+        else:
+            return self.centers[::-1], self.centers[::-1]

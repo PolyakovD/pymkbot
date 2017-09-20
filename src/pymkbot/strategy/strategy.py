@@ -1,7 +1,6 @@
 import time
 
 import pymkbot.keyboard.directkeys as keys
-from pymkbot.keyboard.key_state_getter import CAPS_LOCK
 
 
 class Strategy:
@@ -21,7 +20,7 @@ class Strategy:
     def _release(self):
         raise NotImplementedError
 
-    def run_strategy(self, switch=CAPS_LOCK):
+    def run_strategy(self, switch):
         while True:
             if self._keybd_switch.get_key_state(switch):
                 self.do_action()
