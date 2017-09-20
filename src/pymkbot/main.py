@@ -13,7 +13,7 @@ from pymkbot.utils.async_executor import AsyncExecutor
 if __name__ == "__main__":
     image_provider = AsyncImageProvider()
     position_feature_provider = MyPositionFeature()
-    hp_feature = HPFeature(player=0)
+    hp_feature = HPFeature()
     image_provider.register_consumer(position_feature_provider.get_value)
     image_provider.register_consumer(hp_feature.get_value)
 
