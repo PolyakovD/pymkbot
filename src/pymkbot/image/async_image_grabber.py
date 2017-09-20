@@ -25,7 +25,7 @@ class AsyncImageGrabber:
         self._executor = AsyncExecutor()
         self._callback = None
         if debug_image_size:
-            self._debug_image_size = debug_image_size
+            self._debug_image_size = tuple(debug_image_size)
         else:
             self._debug_image_size = self._size
         self._current_img = None

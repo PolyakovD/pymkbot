@@ -7,12 +7,12 @@ from pymkbot.image.async_image_provider import AsyncImageProvider
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
 from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
-from pymkbot.utils.ParamsConfig import read_config
+from pymkbot.utils.params_config import read_config
 from pymkbot.utils.async_executor import AsyncExecutor
 
 
-def create_image_provider(feature_list):
-    image_provider = AsyncImageProvider()
+def create_image_provider(feature_list, debug_image_size):
+    image_provider = AsyncImageProvider(debug_image_size=debug_image_size)
     for feature in feature_list:
         image_provider.register_consumer(feature.get_value)
 

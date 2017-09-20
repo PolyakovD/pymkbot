@@ -2,7 +2,7 @@ import yaml
 
 PARAMS_CONFIG_SCHEMA = {
     'nameplates-path': './data/names',
-    'debug-screen-size': [320, 240]
+    'debug-image-size': [320, 240]
 }
 
 
@@ -12,7 +12,7 @@ def read_config(filename):
         with open(filename, 'r') as yml_config:
             config.update(yaml.load(yml_config))
         params_config = ParamsConfig(nameplates_path=config['nameplates-path'],
-                                     debug_screen_size=config['debug-screen-size'])
+                                     debug_image_size=config['debug-image-size'])
         return params_config
     except:
         print("ERROR - no such file: " + filename)
@@ -22,10 +22,10 @@ def read_config(filename):
 class ParamsConfig:
     def __init__(self,
                  nameplates_path=None,
-                 debug_screen_size=None
+                 debug_image_size=None
                  ):
         self.nameplates_path = nameplates_path
-        self.debug_screen_size = debug_screen_size
+        self.debug_image_size = debug_image_size
 
 
 DEFAULT_PARAMS_CONFIG = ParamsConfig()
