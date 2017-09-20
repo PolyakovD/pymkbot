@@ -16,4 +16,3 @@ class Strategy:
 
     def _release(self):
         raise NotImplementedError
-

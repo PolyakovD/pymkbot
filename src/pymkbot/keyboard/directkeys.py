@@ -83,8 +83,6 @@ class Input(ctypes.Structure):
 
 
 # Actuals Functions
-
-
 def press_key(hex_key_code):
     if isinstance(hex_key_code, tuple):
         for single_code in hex_key_code:
@@ -107,10 +105,3 @@ def release_key(hex_key_code):
     ii_.ki = KeyBdInput(0, hex_key_code, 0x0008 | 0x0002, 0, ctypes.pointer(extra))
     x = Input(ctypes.c_ulong(1), ii_)
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
-
-
-if __name__ == '__main__':
-    press_key(0x11)
-    time.sleep(1)
-    release_key(0x11)
-    time.sleep(1)

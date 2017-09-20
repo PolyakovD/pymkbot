@@ -1,4 +1,4 @@
-from pymkbot.image.async_image_grab import AsyncImageGrabber
+from pymkbot.image.async_image_grabber import AsyncImageGrabber
 from pymkbot.utils.async_executor import AsyncExecutor
 
 

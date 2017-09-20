@@ -1,32 +1,31 @@
 import time
 
-import pymkbot.keyboard.directkeys as keys
+from pymkbot.features.hp_feature import HPFeature
 from pymkbot.features.my_position_feature import MyPositionFeature
 from pymkbot.image.async_image_provider import AsyncImageProvider
 
-from pymkbot.keyboard.key_state_getter import KeyStateGetter, VK_CAPITAL, VK_SCROLL, KeyPressCallback
+from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
 from pymkbot.strategy.lu_keng_naive_strategy import LuKengNaiveStrategy
 from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
 from pymkbot.utils.async_executor import AsyncExecutor
 
 if __name__ == "__main__":
-
-    img_provider = AsyncImageProvider()
+    image_provider = AsyncImageProvider()
     position_feature_provider = MyPositionFeature()
-    img_provider.register_consumer(position_feature_provider.get_value)
+    hp_feature = HPFeature(player=0)
+    image_provider.register_consumer(position_feature_provider.get_value)
+    image_provider.register_consumer(hp_feature.get_value)
 
-    #time.sleep(5)
-    strat = RandomMoveTeacherStrategy(player=0)
+    strategy1 = RandomMoveTeacherStrategy(player=0)
     time.sleep(1)
-    strat2 = RandomMoveStrategy(player=1)
-    #grabber.set_callback(strat.get_action)
+    strategy2 = RandomMoveStrategy(player=1)
     keybd_switch = KeyStateGetter()
 
     keybd_shortcuts = KeyPressCallback()
-    keybd_shortcuts.add_key_callback(0x58, strat.remember)
+    keybd_shortcuts.add_key_callback(0x58, strategy1.remember)
 
-    def do_strat(strategy, switch=VK_CAPITAL):
+    def run_strategy(strategy, switch=CAPS_LOCK):
         while True:
             if keybd_switch.get_key_state(switch):
                 strategy.do_action()
@@ -34,11 +33,11 @@ if __name__ == "__main__":
                 strategy.release()
             time.sleep(0.05)
 
-    strat_executor = AsyncExecutor()
-    strat_executor.call_soon_threadsafe(do_strat, strat, VK_SCROLL)
+    strategy1_executor = AsyncExecutor()
+    strategy1_executor.call_soon_threadsafe(run_strategy, strategy1, SCROLL_LOCK)
 
-    strat2_executor = AsyncExecutor()
-    strat2_executor.call_soon_threadsafe(do_strat, strat2, VK_CAPITAL)
+    strategy2_executor = AsyncExecutor()
+    strategy2_executor.call_soon_threadsafe(run_strategy, strategy2, CAPS_LOCK)
 
     while True:
         time.sleep(0.05)

@@ -62,6 +62,3 @@ class LuKengNaiveStrategy(Strategy):
             self._defence()
         else:
             self._attack()
-
-
-

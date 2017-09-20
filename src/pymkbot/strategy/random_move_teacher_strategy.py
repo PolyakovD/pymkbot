@@ -59,6 +59,3 @@ class RandomMoveTeacherStrategy(Strategy):
             self._random_move()
             self._random_move()
             self._random_attack()
-
-
-

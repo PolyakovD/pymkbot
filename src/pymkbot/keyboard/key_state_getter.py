@@ -2,8 +2,8 @@ import time
 
 from pymkbot.utils.async_executor import AsyncExecutor
 
-VK_CAPITAL = 0x14
-VK_SCROLL = 0x91
+CAPS_LOCK = 0x14
+SCROLL_LOCK = 0x91
 
 
 class KeyStateGetter:
@@ -11,7 +11,7 @@ class KeyStateGetter:
         import ctypes
         self._hllDll = ctypes.WinDLL("User32.dll")
 
-    def get_key_state(self, key=VK_CAPITAL):
+    def get_key_state(self, key=CAPS_LOCK):
         return self._hllDll.GetKeyState(key) % 2
 
 

@@ -1,8 +1,6 @@
 import numpy as np
-from PIL import ImageGrab
 import cv2
 
-from pymkbot.features.my_position_feature import MyPositionFeature
 from pymkbot.utils.async_executor import AsyncExecutor
 
 import win32gui, win32ui, win32con, win32api
@@ -43,7 +41,6 @@ class AsyncImageGrabber:
     def _record_screen_forever(self):
         width, height = self._size
         while True:
-            #self._current_img = np.array(ImageGrab.grab(bbox=(0, 30, 320, 270)))
             self._hwindc = win32gui.GetWindowDC(self._hwin)
             srcdc = win32ui.CreateDCFromHandle(self._hwindc)
             memdc = srcdc.CreateCompatibleDC()

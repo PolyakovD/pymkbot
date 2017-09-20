@@ -32,4 +32,3 @@ class AsyncExecutor:
 
     def call_soon_threadsafe(self, func, *args, **kwargs):
         self._loop.call_soon_threadsafe(func, *args, **kwargs)
-
