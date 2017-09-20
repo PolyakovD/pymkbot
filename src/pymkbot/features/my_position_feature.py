@@ -1,21 +1,37 @@
 import cv2
 import numpy as np
-from numpy.core.multiarray import unravel_index
-from numpy.ma import absolute, nonzero, dstack, empty, zeros
+from numpy.ma import absolute, nonzero
 from sklearn.cluster import KMeans
 
 from pymkbot.features.Feature import Feature
 
-#LIMIT_INFERIOR = 3000
-#LIMIT_SUPERIOR = 70000
+FRAC_MIN = 0.01
+FRAC_MAX = 0.1
 
-frac_min = 0.01
-frac_max = 0.1
+
+def make_kmeans(data_set):
+    kmeans_res = KMeans(n_clusters=2, random_state=0).fit(data_set)
+    return kmeans_res.labels_, kmeans_res.cluster_centers_
+
+
+def get_class_mask(mask_res, mask_label, mask_int, mask_bool, class_num):
+    class_mask_int = mask_int[mask_res][mask_label == class_num]
+    class_mask = np.zeros_like(mask_res)
+    class_mask[class_mask_int] = 1
+    return class_mask.reshape(mask_bool.shape)
+
 
 class MyPositionFeature(Feature):
     def __init__(self):
         self.base_image = None
         self.have_base = False
+        self.num_pixels = 0
+
+    def get_mask(self, image):
+        differential_image = absolute(cv2.blur(image, (5, 5)) - self.base_image)
+        differential_image = cv2.cvtColor(differential_image, cv2.COLOR_BGR2GRAY)
+        ret, mask = cv2.threshold(differential_image, 127, 255, cv2.THRESH_BINARY)
+        return mask
 
     def get_value(self, image):
         if self.have_base:
@@ -25,46 +41,28 @@ class MyPositionFeature(Feature):
             mask_bool = mask.astype(np.bool)
             nonzero_pos = nonzero(mask)
             nonzero_num = len(nonzero_pos[0])
-            num_pixels = np.prod(mask_bool.shape)
-            if frac_min * num_pixels < nonzero_num < frac_max * num_pixels:
-                #data_set = empty((nonzero_pos[0].shape[0], 2))
+            if FRAC_MIN * self.num_pixels < nonzero_num < FRAC_MAX * self.num_pixels:
                 data_set = np.vstack(nonzero_pos).T
-                #data_set[:, 0] = nonzero_pos[0]
-                #data_set[:, 1] = nonzero_pos[1]
-                kmeans_res = KMeans(n_clusters=2, random_state=0).fit(data_set)
-                # first_class_pos = data_set[kmeans_res.labels_ == 0, :]
-                mask_label = kmeans_res.labels_
+                mask_label, centers = make_kmeans(data_set)
                 mask_res = mask_bool.ravel()
                 mask_int = np.arange(len(mask_res))
 
-                mask0_int = mask_int[mask_res][mask_label == 0]
-                mask0 = np.zeros_like(mask_res)
-                mask0[mask0_int] = 1
-                mask0 = mask0.reshape(mask_bool.shape)
+                mask0 = get_class_mask(mask_res, mask_label, mask_int, mask_bool, 0)
+                # mask0_int = mask_int[mask_res][mask_label == 0]
+                # mask0 = np.zeros_like(mask_res)
+                # mask0[mask0_int] = 1
+                # mask0 = mask0.reshape(mask_bool.shape)
 
-                mask1_int = mask_int[mask_res][mask_label == 1]
-                mask1 = np.zeros_like(mask_res)
-                mask1[mask1_int] = 1
-                mask1 = mask1.reshape(mask_bool.shape)
+                mask1 = get_class_mask(mask_res, mask_label, mask_int, mask_bool, 1)
+                # mask1_int = mask_int[mask_res][mask_label == 1]
+                # mask1 = np.zeros_like(mask_res)
+                # mask1[mask1_int] = 1
+                # mask1 = mask1.reshape(mask_bool.shape)
 
-                #mask_int = np.arange(mask.shape[0] * mask.shape[1])
-                #mask_res = mask_int[mask_bool][mask_label == 1]
-                #msak1[mask_bool][mask_label == 1]
-                # first_class_mask = zeros(diff_image.shape, dtype=numpy.int)
-                # first_class_mask[first_class_pos[:, 0], first_class_pos[:, 1]] = 255
-                #
-                # second_class_pos = data_set[kmeans_res.labels_ == 1, :]
-                # second_class_mask = zeros(diff_image.shape, dtype=numpy.int)
-                # second_class_mask[second_class_pos[:, 0], second_class_pos[:, 1]] = 255
-
-                # second_mask = np.zeros(diff_image.shape, np.uint8)
-                # mask[100:300, 100:400] = 255
-                # masked_img = cv2.bitwise_and(img, img, mask=mask)
-                # print((data_set.shape, first_class_pos.shape, second_class_pos.shape))
                 red = (mask0 * 255).astype(np.uint8)
                 green = (mask1 * 255).astype(np.uint8)
                 diff_image = cv2.merge((red, green, mask))
-                for y, x in kmeans_res.cluster_centers_:
+                for y, x in centers:
                     x = int(x)
                     y = int(y)
                     cv2.rectangle(diff_image, (x - 10, y - 10), (x + 10, y + 10), (255, 0, 0), 2)
@@ -77,6 +75,7 @@ class MyPositionFeature(Feature):
         else:
             self.base_image = cv2.blur(image, (5, 5))
             self.have_base = True
+            self.num_pixels = np.prod(image.shape)
             # processed_image = image[240:430, :]
             # red_image = processed_image[:, :, 0]
             # processed_image = cv2.cvtColor(processed_image, cv2.COLOR_BGR2GRAY)
