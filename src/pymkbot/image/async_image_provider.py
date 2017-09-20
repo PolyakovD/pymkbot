@@ -58,8 +58,7 @@ class AsyncImageProvider:
         cls._consumers[name] = AsyncConsumer(consumer_callback)
 
     @classmethod
-    @property
-    def image(self):
-        if not self._image_grabber:
+    def get_image(cls):
+        if not cls._image_grabber:
             return None
-        return self._image_grabber.image
+        return cls._image_grabber.image

@@ -22,7 +22,7 @@ if __name__ == "__main__":
     params_config = read_config('config.yml')
 
     name_feature = NameFeature(params_config.nameplates_path)
-    image_provider = create_image_provider([PositionFeature(), HPFeature(), name_feature], params_config.debug_image_size)
+    create_image_provider([PositionFeature(), HPFeature(), name_feature], params_config.debug_image_size)
 
     #image_provider.register_consumer(name_parser.process_image)
 
@@ -32,11 +32,11 @@ if __name__ == "__main__":
     strategy2 = RandomMoveStrategy(player=1)
     keybd_switch = KeyStateGetter()
 
-    #moves_serializer = GoodMovesSerializer(strategy1, image_provider, params_config.moves_lib_path)
-    #moves_serializer.load()
+    moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
+    moves_serializer.load()
 
     keybd_shortcuts = KeyPressCallback()
-    #keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
+    keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
     # keybd_shortcuts.add_key_callback(0x5A, name_feature._calibrate)
 
     def run_strategy(strategy, switch=CAPS_LOCK):

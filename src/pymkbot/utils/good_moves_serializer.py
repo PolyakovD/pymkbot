@@ -4,11 +4,12 @@ from pathlib import Path
 
 import cv2
 
+from pymkbot.image.async_image_provider import AsyncImageProvider
+
 
 class GoodMovesSerializer:
-    def __init__(self, strat, img_provider, path):
+    def __init__(self, strat, path):
         self._strat = strat
-        self._img_provider = img_provider
         self._path = Path(path)
         self._idx = 0
 
@@ -30,7 +31,7 @@ class GoodMovesSerializer:
 
     def on_save_coomand(self):
         moves = self._strat.remember()
-        img = cv2.cvtColor(self._img_provider.image.copy(), cv2.COLOR_RGB2BGR)
+        img = cv2.cvtColor(AsyncImageProvider.get_image().copy(), cv2.COLOR_RGB2BGR)
         cv2.imwrite(str(self._path / (str(self._idx) + '.png')), img)
         with open(str(self._path / (str(self._idx) + '.json')), 'w') as f:
             json.dump(moves, f)
