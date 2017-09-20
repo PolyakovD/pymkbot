@@ -70,6 +70,8 @@ class MyPositionFeature(Feature):
                     cv2.rectangle(diff_image, (x - 10, y - 10), (x + 10, y + 10), (255, 0, 0), 2)
 
                 cv2.imshow("windows2", diff_image)
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    cv2.destroyAllWindows()
 
             self.base_image = cv2.blur(image, (5, 5))
         else:

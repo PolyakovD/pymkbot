@@ -13,6 +13,11 @@ class AsyncImageGrabber:
         self._in_size = (320, 240)
         self._out_size = (680, 480)
         self._current_img = None
+        self._show_image = True
+
+    @property
+    def image(self):
+        return self._current_img
 
     def _debug_show_image_scaled(self):
         img_scaled = cv2.resize(self._current_img, dsize=self._out_size, interpolation=cv2.INTER_NEAREST)
@@ -21,11 +26,10 @@ class AsyncImageGrabber:
             cv2.destroyAllWindows()
 
     def _record_screen_forever(self):
-        position_feature = MyPositionFeature()
         while True:
             self._current_img = np.array(ImageGrab.grab(bbox=(0, 30, 320, 270)))
-            position_feature.get_value(self._current_img)
-            self._debug_show_image_scaled()
+            if self._show_image:
+                self._debug_show_image_scaled()
             if self._callback:
                 self._callback()
 
