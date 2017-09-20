@@ -11,8 +11,8 @@ attacks = ['HIGH_KICK', 'LOW_KICK', 'HIGH_PUNCH', 'LOW_PUNCH']
 
 
 class RandomMoveTeacherStrategy(Strategy):
-    def __init__(self, key_bindings, player):
-        super().__init__(key_bindings, player)
+    def __init__(self, player):
+        super().__init__(player)
         self._begin_time = datetime.now()
         self._strat_len = 0.0
         self._memory = []

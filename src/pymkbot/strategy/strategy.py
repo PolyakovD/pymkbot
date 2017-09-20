@@ -1,6 +1,9 @@
+import pymkbot.keyboard.directkeys as keys
+
+
 class Strategy:
-    def __init__(self, key_bindings, player):
-        self._key_bindings = key_bindings
+    def __init__(self, player):
+        self._key_bindings = keys.keyboard[player]
         self._player = player
         self._released = True
 
