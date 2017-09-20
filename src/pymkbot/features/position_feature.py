@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from numpy.ma import absolute, nonzero
 from pymkbot.features.feature import Feature
+from pymkbot.utils.data.histogram_analyzer import HistogramAnalyzer
 from pymkbot.utils.data.image_utils import make_kmeans, get_class_mask, get_histogram
 
 FRACTION_MIN = 0.01
@@ -20,6 +21,8 @@ class PositionFeature(Feature):
         self.histogram0 = None
         self.histogram1 = None
         self.centers = None
+        self.analyzer = HistogramAnalyzer('character_histogram.pickle')
+        self.name_feature = name_feature
 
     def get_mask(self, image):
         differential_image = absolute(cv2.blur(image, (5, 5)) - self.base_image)
@@ -45,15 +48,14 @@ class PositionFeature(Feature):
 
             self.histogram0 = get_histogram(image, mask0)
             self.histogram1 = get_histogram(image, mask1)
-            ###
-            red = (mask0 * 255).astype(np.uint8)
-            green = (mask1 * 255).astype(np.uint8)
-            diff_image = cv2.merge((red, green, mask))
 
             if self._debug:
-                self._debug_output(diff_image)
+                self._debug_output(mask, mask0, mask1)
 
-    def _debug_output(self, diff_image):
+    def _debug_output(self, mask, mask0, mask1):
+        red = (mask0 * 255).astype(np.uint8)
+        green = (mask1 * 255).astype(np.uint8)
+        diff_image = cv2.merge((red, green, mask))
         for y, x in self.centers:
             x = int(x)
             y = int(y)
@@ -65,9 +67,21 @@ class PositionFeature(Feature):
 
     def get_value(self, image):
         if self.have_base:
+            first_name, second_name = self.name_feature.get_value(image)
+            if first_name is None or second_name is None:
+                return None
             self.get_histogram_centers(image)
             self.base_image = cv2.blur(image, (5, 5))
-            return self.centers
+
+            if self.histogram0 is None or self.histogram1 is None:
+                return None
+            new_order = self.analyzer.analyze(first_name, second_name, self.histogram0, self.histogram1)
+            if new_order is None:
+                return None
+            if new_order[0] == 0:
+                return self.centers[::-1], self.centers[::-1]
+            else:
+                return self.centers[::-1], self.centers[::-1]
         else:
             self.base_image = cv2.blur(image, (5, 5))
             self.have_base = True

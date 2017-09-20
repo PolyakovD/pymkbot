@@ -33,6 +33,7 @@ if __name__ == "__main__":
     with open('character_histogram.pickle', 'rb') as file:
         data = pickle.load(file)
     print(data.keys())
+    # print(data["scorpion"].shape)
 
     keybd_shortcuts = KeyPressCallback()
     keybd_shortcuts.add_key_callback(SPACE, run_data_collection)
