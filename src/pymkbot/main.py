@@ -7,6 +7,7 @@ from pymkbot.image.async_image_provider import AsyncImageProvider
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
 from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
+from pymkbot.utils.ParamsConfig import read_config
 from pymkbot.utils.async_executor import AsyncExecutor
 
 
@@ -17,7 +18,13 @@ def create_image_provider(feature_list):
 
 
 if __name__ == "__main__":
-    create_image_provider([PositionFeature(), HPFeature(), NameFeature('..\\..\\data\\names')])
+    params_config = read_config('config.yml')
+
+    name_feature = NameFeature(params_config.nameplates_path)
+    create_image_provider([PositionFeature(), HPFeature(), name_feature])
+
+    #image_provider.register_consumer(name_parser.process_image)
+
 
     strategy1 = RandomMoveTeacherStrategy(player=0)
     time.sleep(1)
@@ -26,7 +33,7 @@ if __name__ == "__main__":
 
     keybd_shortcuts = KeyPressCallback()
     keybd_shortcuts.add_key_callback(0x58, strategy1.remember)
-    # keybd_shortcuts.add_key_callback(0x5A, name_parser._calibrate)
+    # keybd_shortcuts.add_key_callback(0x5A, name_feature._calibrate)
 
     def run_strategy(strategy, switch=CAPS_LOCK):
         while True:

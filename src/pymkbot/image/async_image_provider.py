@@ -16,7 +16,8 @@ class AsyncConsumer:
         self._updated = False
         img = self._current_image.copy()
         res = self._callback(img)
-        self._current_result = res
+        if res is not None:
+            self._current_result = res
         if self._updated:
             self._process()
         else:
@@ -35,9 +36,9 @@ class AsyncConsumer:
 
 
 class AsyncImageProvider:
-    def __init__(self):
+    def __init__(self, *, debug_image_size=None):
         self._consumers = []
-        self._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270))
+        self._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270), debug_image_size=debug_image_size)
         self._image_grabber.set_callback(self._on_grabber_update)
         self._image_grabber.begin_recording()
 

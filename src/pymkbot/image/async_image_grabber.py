@@ -7,7 +7,7 @@ import win32gui, win32ui, win32con, win32api
 
 
 class AsyncImageGrabber:
-    def __init__(self, region=None):
+    def __init__(self, region=None, debug_image_size=None):
         self._hwin = win32gui.GetDesktopWindow()
 
         if region:
@@ -24,7 +24,10 @@ class AsyncImageGrabber:
 
         self._executor = AsyncExecutor()
         self._callback = None
-        self._out_size = (1360, 960)
+        if debug_image_size:
+            self._debug_image_size = debug_image_size
+        else:
+            self._debug_image_size = self._size
         self._current_img = None
         self._show_image = True
 
@@ -33,7 +36,7 @@ class AsyncImageGrabber:
         return self._current_img
 
     def _debug_show_image_scaled(self):
-        img_scaled = cv2.resize(self._current_img, dsize=self._out_size, interpolation=cv2.INTER_NEAREST)
+        img_scaled = cv2.resize(self._current_img, dsize=self._debug_image_size, interpolation=cv2.INTER_NEAREST)
         cv2.imshow('window', cv2.cvtColor(img_scaled, cv2.COLOR_BGR2RGB))
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
