@@ -21,7 +21,7 @@ class KeyPressCallback:
         self._hllDll = ctypes.WinDLL("User32.dll")
         self._callbacks = {}
         self._executor = AsyncExecutor()
-        self._state = 0
+        self._pressed = set()
         self._executor.call_soon_threadsafe(self.check_states_forever)
 
     def add_key_callback(self, key, callback):
@@ -29,12 +29,12 @@ class KeyPressCallback:
 
     def check_states_forever(self):
         while True:
-            any_pressed = False
             for key in self._callbacks.keys():
-                pressed = self._hllDll.GetKeyState(key) % 2
+                pressed = self._hllDll.GetKeyState(key) & 0x8000
                 if pressed:
-                    any_pressed = True
-                if pressed != self._state:
-                    self._callbacks[key]()
-            self._state = any_pressed
+                    if key not in self._pressed:
+                        self._callbacks[key]()
+                        self._pressed.add(key)
+                elif key in self._pressed:
+                    self._pressed.remove(key)
             time.sleep(0.05)

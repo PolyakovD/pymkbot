@@ -3,6 +3,7 @@ import time
 from pymkbot.features.hp_feature import HPFeature
 from pymkbot.features.position_feature import PositionFeature
 from pymkbot.image.async_image_provider import AsyncImageProvider
+from pymkbot.image.name_parser import NameParser
 
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
 from pymkbot.strategy.lu_keng_naive_strategy import LuKengNaiveStrategy
@@ -19,13 +20,19 @@ def create_image_provider(feature_list):
 if __name__ == "__main__":
     create_image_provider([PositionFeature(), HPFeature()])
 
-    strategy1 = RandomMoveTeacherStrategy(player=0)
+    name_parser = NameParser('C:\\work\\workdir\\names')
+    image_provider.register_consumer(name_parser.process_image)
+
+    #time.sleep(5)
+    strategy1 = LuKengNaiveStrategy(player=0)
     time.sleep(1)
     strategy2 = RandomMoveStrategy(player=1)
     keybd_switch = KeyStateGetter()
 
     keybd_shortcuts = KeyPressCallback()
+    #keybd_shortcuts.add_key_callback(0x58, strat.remember)
     keybd_shortcuts.add_key_callback(0x58, strategy1.remember)
+    keybd_shortcuts.add_key_callback(0x56, name_parser._calibrate)
 
     def run_strategy(strategy, switch=CAPS_LOCK):
         while True:
