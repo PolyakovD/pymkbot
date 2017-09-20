@@ -4,6 +4,9 @@ from pymkbot.features.feature import Feature
 
 
 class HPFeature(Feature):
+    def get_name(self):
+        return "hp_feature"
+
     def __init__(self):
         self.shape = [0, 0, 0]
         self.bar_coords = [{}, {}]

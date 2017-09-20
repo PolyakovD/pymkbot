@@ -9,6 +9,9 @@ FRACTION_MAX = 0.1
 
 
 class PositionFeature(Feature):
+    def get_name(self):
+        return "position_feature"
+
     def __init__(self, debug_mode=True):
         self.base_image = None
         self._debug = debug_mode

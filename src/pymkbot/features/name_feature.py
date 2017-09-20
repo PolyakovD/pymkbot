@@ -11,6 +11,9 @@ ROI_1 = np.array([232, 27, 311, 35])
 
 
 class NameFeature(Feature):
+    def get_name(self):
+        return "name_feature"
+
     def __init__(self, path):
         self._path = Path(path)
         self._roi0 = ROI_0

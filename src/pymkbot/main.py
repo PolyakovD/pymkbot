@@ -14,7 +14,7 @@ from pymkbot.utils.async_executor import AsyncExecutor
 def create_image_provider(feature_list, debug_image_size):
     image_provider = AsyncImageProvider(debug_image_size=debug_image_size)
     for feature in feature_list:
-        image_provider.register_consumer(feature.get_value)
+        image_provider.register_consumer(feature.get_name(), feature.get_value)
 
 
 if __name__ == "__main__":

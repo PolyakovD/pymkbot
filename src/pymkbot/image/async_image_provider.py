@@ -37,15 +37,15 @@ class AsyncConsumer:
 
 class AsyncImageProvider:
     def __init__(self, *, debug_image_size=None):
-        self._consumers = []
+        self._consumers = {}
         self._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270), debug_image_size=debug_image_size)
         self._image_grabber.set_callback(self._on_grabber_update)
         self._image_grabber.begin_recording()
 
     def _on_grabber_update(self):
         current_image = self._image_grabber.image
-        for consumer in self._consumers:
+        for consumer in self._consumers.values():
             consumer.update(current_image)
 
-    def register_consumer(self, consumer_callback):
-        self._consumers.append(AsyncConsumer(consumer_callback))
+    def register_consumer(self, name, consumer_callback):
+        self._consumers[name] = AsyncConsumer(consumer_callback)
