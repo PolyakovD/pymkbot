@@ -1,12 +1,10 @@
 import time
 
 from pymkbot.features.hp_feature import HPFeature
+from pymkbot.features.name_feature import NameFeature
 from pymkbot.features.position_feature import PositionFeature
 from pymkbot.image.async_image_provider import AsyncImageProvider
-from pymkbot.image.name_parser import NameParser
-
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
-from pymkbot.strategy.lu_keng_naive_strategy import LuKengNaiveStrategy
 from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
 from pymkbot.utils.async_executor import AsyncExecutor
@@ -17,23 +15,18 @@ def create_image_provider(feature_list):
     for feature in feature_list:
         image_provider.register_consumer(feature.get_value)
 
+
 if __name__ == "__main__":
-    create_image_provider([PositionFeature(), HPFeature()])
+    create_image_provider([PositionFeature(), HPFeature(), NameFeature('..\\..\\data\\names')])
 
-    name_parser = NameParser('C:\\work\\workdir\\names')
-    image_provider.register_consumer(name_parser.process_image)
-
-    #time.sleep(5)
     strategy1 = RandomMoveTeacherStrategy(player=0)
     time.sleep(1)
     strategy2 = RandomMoveStrategy(player=1)
     keybd_switch = KeyStateGetter()
 
     keybd_shortcuts = KeyPressCallback()
-    #keybd_shortcuts.add_key_callback(0x58, strat.remember)
     keybd_shortcuts.add_key_callback(0x58, strategy1.remember)
-    keybd_shortcuts.add_key_callback(0x5A, name_parser._calibrate)
-    #keybd_shortcuts.add_key_callback(0x43, name_parser.on_save_image_hotkey)
+    # keybd_shortcuts.add_key_callback(0x5A, name_parser._calibrate)
 
     def run_strategy(strategy, switch=CAPS_LOCK):
         while True:

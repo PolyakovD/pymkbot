@@ -3,11 +3,7 @@ import time
 
 from pymkbot.features.position_feature import PositionFeature
 from pymkbot.image.async_image_provider import AsyncImageProvider
-
-from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
-from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
-from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
-from pymkbot.utils.async_executor import AsyncExecutor
+from pymkbot.keyboard.key_state_getter import KeyPressCallback
 
 SPACE = 0x20
 ENTER = 0x0D
@@ -30,18 +26,17 @@ if __name__ == "__main__":
         data[name1] = position_feature_provider.histogram0
 
     def pickle_data():
-        with open('data.pickle', 'wb') as file:
+        with open('character_histogram.pickle', 'wb') as file:
             pickle.dump(data, file, pickle.HIGHEST_PROTOCOL)
 
 
-    with open('data.pickle', 'rb') as file:
+    with open('character_histogram.pickle', 'rb') as file:
         data = pickle.load(file)
     print(data.keys())
 
-    keybd_shortcuts1 = KeyPressCallback()
-    keybd_shortcuts1.add_key_callback(SPACE, run_data_collection)
-    keybd_shortcuts2 = KeyPressCallback()
-    keybd_shortcuts2.add_key_callback(ENTER, pickle_data)
+    keybd_shortcuts = KeyPressCallback()
+    keybd_shortcuts.add_key_callback(SPACE, run_data_collection)
+    keybd_shortcuts.add_key_callback(ENTER, pickle_data)
 
     while True:
         time.sleep(0.05)
