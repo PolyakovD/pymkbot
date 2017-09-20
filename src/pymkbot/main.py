@@ -7,21 +7,22 @@ from pymkbot.image.async_image_provider import AsyncImageProvider
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
 from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
+from pymkbot.utils.good_moves_serializer import GoodMovesSerializer
 from pymkbot.utils.params_config import read_config
 from pymkbot.utils.async_executor import AsyncExecutor
 
 
 def create_image_provider(feature_list, debug_image_size):
-    image_provider = AsyncImageProvider(debug_image_size=debug_image_size)
+    AsyncImageProvider.launch(debug_image_size=debug_image_size)
     for feature in feature_list:
-        image_provider.register_consumer(feature.get_name(), feature.get_value)
+        AsyncImageProvider.register_consumer(feature.get_name(), feature.get_value)
 
 
 if __name__ == "__main__":
     params_config = read_config('config.yml')
 
     name_feature = NameFeature(params_config.nameplates_path)
-    create_image_provider([PositionFeature(), HPFeature(), name_feature], params_config.debug_image_size)
+    image_provider = create_image_provider([PositionFeature(), HPFeature(), name_feature], params_config.debug_image_size)
 
     #image_provider.register_consumer(name_parser.process_image)
 
@@ -31,8 +32,11 @@ if __name__ == "__main__":
     strategy2 = RandomMoveStrategy(player=1)
     keybd_switch = KeyStateGetter()
 
+    #moves_serializer = GoodMovesSerializer(strategy1, image_provider, params_config.moves_lib_path)
+    #moves_serializer.load()
+
     keybd_shortcuts = KeyPressCallback()
-    keybd_shortcuts.add_key_callback(0x58, strategy1.remember)
+    #keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
     # keybd_shortcuts.add_key_callback(0x5A, name_feature._calibrate)
 
     def run_strategy(strategy, switch=CAPS_LOCK):

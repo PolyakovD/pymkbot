@@ -17,6 +17,10 @@ class RandomMoveTeacherStrategy(Strategy):
         self._strat_len = 0.0
         self._memory = []
         self._good_moves = []
+        self._random_move_weight = 30
+        #self._random_movement_weight = 10
+
+
 
     def _random_move(self):
         move = self._key_bindings[random.choice(moves)]
@@ -45,15 +49,31 @@ class RandomMoveTeacherStrategy(Strategy):
             keys.release_key(action)
             time.sleep(0.05)
 
+    def _random_movement(self):
+        movement = self._key_bindings[random.choice(['LEFT', 'RIGHT'])]
+        self._memory.append(movement)
+        keys.press_key(movement)
+        time.sleep(0.25)
+
     def remember(self):
-        self._good_moves.append(self._memory[-20:])
+        moves = self._memory[-15:]
+        self._good_moves.append(moves)
         print('get')
+        return moves
+
+    def add_good_moves(self, moves):
+        self._good_moves.extend(moves)
 
     def _release(self):
         pass
 
     def do_action(self):
-        if random.random() * (10 + len(self._good_moves)) > 10:
+        n = random.random() * 2 * (self._random_move_weight + len(self._good_moves))
+        if n > self._random_move_weight + len(self._good_moves):
+            self._random_movement()
+            self._random_attack()
+            self._random_attack()
+        elif n > self._random_move_weight:
             self._random_good_move()
         else:
             self._random_move()
