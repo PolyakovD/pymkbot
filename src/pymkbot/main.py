@@ -24,7 +24,7 @@ if __name__ == "__main__":
     image_provider.register_consumer(name_parser.process_image)
 
     #time.sleep(5)
-    strategy1 = LuKengNaiveStrategy(player=0)
+    strategy1 = RandomMoveTeacherStrategy(player=0)
     time.sleep(1)
     strategy2 = RandomMoveStrategy(player=1)
     keybd_switch = KeyStateGetter()
@@ -32,7 +32,8 @@ if __name__ == "__main__":
     keybd_shortcuts = KeyPressCallback()
     #keybd_shortcuts.add_key_callback(0x58, strat.remember)
     keybd_shortcuts.add_key_callback(0x58, strategy1.remember)
-    keybd_shortcuts.add_key_callback(0x56, name_parser._calibrate)
+    keybd_shortcuts.add_key_callback(0x5A, name_parser._calibrate)
+    #keybd_shortcuts.add_key_callback(0x43, name_parser.on_save_image_hotkey)
 
     def run_strategy(strategy, switch=CAPS_LOCK):
         while True:

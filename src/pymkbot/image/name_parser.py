@@ -62,7 +62,9 @@ class NameParser:
 
     def process_image(self, img):
         self._current_image = img.copy()
-        return self._get_names(img)
+        names = self._get_names(img)
+        #print(names)
+        return names
 
     def on_save_image_hotkey(self):
         self.save_image(self._current_image)
