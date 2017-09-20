@@ -10,12 +10,14 @@ from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
 from pymkbot.utils.async_executor import AsyncExecutor
 
-if __name__ == "__main__":
+
+def create_image_provider(feature_list):
     image_provider = AsyncImageProvider()
-    position_feature_provider = PositionFeature()
-    hp_feature = HPFeature()
-    image_provider.register_consumer(position_feature_provider.get_value)
-    image_provider.register_consumer(hp_feature.get_value)
+    for feature in feature_list:
+        image_provider.register_consumer(feature.get_value)
+
+if __name__ == "__main__":
+    create_image_provider([PositionFeature(), HPFeature()])
 
     strategy1 = RandomMoveTeacherStrategy(player=0)
     time.sleep(1)
