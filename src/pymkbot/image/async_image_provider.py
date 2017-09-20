@@ -62,3 +62,7 @@ class AsyncImageProvider:
         if not cls._image_grabber:
             return None
         return cls._image_grabber.image
+
+    @classmethod
+    def get_consumer_result(cls, consumer_name):
+        return cls._consumers[consumer_name].result

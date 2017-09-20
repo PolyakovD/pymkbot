@@ -6,8 +6,8 @@ import pymkbot.keyboard.directkeys as keys
 
 
 class NaiveStrategy(Strategy):
-    def __init__(self, player):
-        super().__init__(player)
+    def __init__(self, player, keybd_switch):
+        super().__init__(player, keybd_switch)
         self._begin_time = datetime.now()
         self._strat_len = 5.0
         self._current_action = 'attack'

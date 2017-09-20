@@ -5,9 +5,11 @@
 # http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
 
 import ctypes
-import time
 
 SendInput = ctypes.windll.user32.SendInput
+
+moves = ['UP', 'LEFT', 'DOWN', 'RIGHT']
+attacks = ['HIGH_KICK', 'LOW_KICK', 'HIGH_PUNCH', 'LOW_PUNCH']
 
 keyboard = [
     {
@@ -41,8 +43,6 @@ keyboard = [
         'RIGHT': 0x32
     }
 ]
-
-
 
 # C struct redefinitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
