@@ -1,7 +1,7 @@
 import pickle
 import time
 
-from pymkbot.features.my_position_feature import MyPositionFeature
+from pymkbot.features.position_feature import PositionFeature
 from pymkbot.image.async_image_provider import AsyncImageProvider
 
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
@@ -15,7 +15,7 @@ ENTER = 0x0D
 
 if __name__ == "__main__":
     image_provider = AsyncImageProvider()
-    position_feature_provider = MyPositionFeature()
+    position_feature_provider = PositionFeature()
     image_provider.register_consumer(position_feature_provider.get_value)
 
     data = {}

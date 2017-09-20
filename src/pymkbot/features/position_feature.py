@@ -8,7 +8,7 @@ FRACTION_MIN = 0.01
 FRACTION_MAX = 0.1
 
 
-class MyPositionFeature(Feature):
+class PositionFeature(Feature):
     def __init__(self, debug_mode=True):
         self.base_image = None
         self._debug = debug_mode
