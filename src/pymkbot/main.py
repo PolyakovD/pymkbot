@@ -21,7 +21,7 @@ if __name__ == "__main__":
     params_config = read_config('config.yml')
 
     name_feature = NameFeature(params_config.nameplates_path)
-    create_image_provider([PositionFeature(), HPFeature(), name_feature])
+    create_image_provider([PositionFeature(), HPFeature(), name_feature], params_config.debug_image_size)
 
     #image_provider.register_consumer(name_parser.process_image)
 
