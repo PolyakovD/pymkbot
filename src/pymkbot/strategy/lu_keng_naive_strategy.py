@@ -6,8 +6,8 @@ import pymkbot.keyboard.directkeys as keys
 
 
 class LuKengNaiveStrategy(Strategy):
-    def __init__(self, key_bindings):
-        super().__init__(key_bindings)
+    def __init__(self, key_bindings, player):
+        super().__init__(key_bindings, player)
         self._begin_time = datetime.now()
         self._strat_len = 2.0
         self._current_action = 'attack'

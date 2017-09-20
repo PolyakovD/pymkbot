@@ -1,6 +1,7 @@
 class Strategy:
-    def __init__(self, key_bindings):
+    def __init__(self, key_bindings, player):
         self._key_bindings = key_bindings
+        self._player = player
         self._released = True
 
     def do_action(self):

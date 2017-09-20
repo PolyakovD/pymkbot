@@ -17,9 +17,9 @@ if __name__ == "__main__":
     img_provider.register_consumer(position_feature_provider.get_value)
 
     #time.sleep(5)
-    strat = RandomMoveTeacherStrategy(keys.kbd_player1)
+    strat = RandomMoveTeacherStrategy(keys.kbd_player1, player=0)
     time.sleep(1)
-    strat2 = RandomMoveStrategy(keys.kbd_player2)
+    strat2 = RandomMoveStrategy(keys.kbd_player2, player=1)
     #grabber.set_callback(strat.get_action)
     keybd_switch = KeyStateGetter()
 

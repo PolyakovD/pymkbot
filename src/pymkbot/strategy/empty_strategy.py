@@ -1,4 +1,3 @@
-from datetime import datetime
 from pymkbot.strategy.strategy import Strategy
 
 
