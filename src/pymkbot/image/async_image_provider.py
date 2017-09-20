@@ -36,16 +36,30 @@ class AsyncConsumer:
 
 
 class AsyncImageProvider:
-    def __init__(self, *, debug_image_size=None):
-        self._consumers = {}
-        self._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270), debug_image_size=debug_image_size)
-        self._image_grabber.set_callback(self._on_grabber_update)
-        self._image_grabber.begin_recording()
+    _running = False
+    _consumers = {}
+    _image_grabber = None
 
-    def _on_grabber_update(self):
-        current_image = self._image_grabber.image
-        for consumer in self._consumers.values():
+    @classmethod
+    def launch(cls, *, debug_image_size=None):
+        assert not cls._running
+        cls._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270), debug_image_size=debug_image_size)
+        cls._image_grabber.set_callback(cls._on_grabber_update)
+        cls._image_grabber.begin_recording()
+
+    @classmethod
+    def _on_grabber_update(cls):
+        current_image = cls._image_grabber.image
+        for consumer in cls._consumers.values():
             consumer.update(current_image)
 
-    def register_consumer(self, name, consumer_callback):
-        self._consumers[name] = AsyncConsumer(consumer_callback)
+    @classmethod
+    def register_consumer(cls, name, consumer_callback):
+        cls._consumers[name] = AsyncConsumer(consumer_callback)
+
+    @classmethod
+    @property
+    def image(self):
+        if not self._image_grabber:
+            return None
+        return self._image_grabber.image
