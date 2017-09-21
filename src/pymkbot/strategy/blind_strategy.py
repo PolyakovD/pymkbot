@@ -1,6 +1,9 @@
+import datetime
+import pickle
 import random
-
 import time
+
+import math
 
 from pymkbot.image.async_image_provider import AsyncImageProvider
 from pymkbot.strategy.strategy import Strategy
@@ -35,12 +38,21 @@ def get_down_block():
     return 'BLOCK', 'DOWN'
 
 
-class BlindStrategy(Strategy):
-    def __init__(self, player, keybd_switch):
-        super().__init__(player, keybd_switch)
+DUMP_SIZE = 500
 
-    def _release(self):
-        pass
+
+class BlindStrategy:
+    def __init__(self, player, keybd_switch, switch):
+        self.keybd_switch = keybd_switch
+        self.switch = switch
+
+        self.player = player
+        self._key_bindings = keys.keyboard[player]
+        self.fighting = True
+        self.counter = 1
+        self.log = []
+        self.id = 0
+        self.working = False
 
     def press_moves_concurrent(self, moves, sleep_time):
         for move in moves:
@@ -48,33 +60,78 @@ class BlindStrategy(Strategy):
         time.sleep(sleep_time)
         for move in moves:
             keys.release_key(self._key_bindings[move])
+        return moves, 'concurrent'
 
     def press_moves_sequence(self, moves, sleep_time):
         for move in moves:
             keys.press_key(self._key_bindings[move])
             time.sleep(sleep_time)
             keys.release_key(self._key_bindings[move])
+        return moves, 'sequence'
 
-    def get_opponent_hp(self):
+    def get_players_hps(self):
         hp0, hp1 = AsyncImageProvider.get_consumer_result("hp_feature")
-        return hp1 if self._player == 0 else hp0
+        return (hp0, hp1) if self.player == 0 else (hp1, hp0)
+
+    def get_players_names(self):
+        return AsyncImageProvider.get_consumer_result('name_feature')
+
+    def get_players_dist(self):
+        pos1, pos2 = AsyncImageProvider.get_consumer_result("position_feature")
+        return math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)
 
     def combo_effectiveness(self, do_something):
-        opponent_hp = self.get_opponent_hp()
-        do_something()
-        return opponent_hp - self.get_opponent_hp()
+        opponent_hp = self.get_players_hps()[1]
+        result = do_something()
+        return opponent_hp - self.get_players_hps()[1], result
 
-    def run_strategy(self, switch):
-        counter = 1
-        while True:
-            if counter % 500 == 0:
-                self.dump_data()
+    def next_combo(self, distance, my_name, vs_name):
+        pass
 
+    def prepare(self):
+        self.counter = 1
 
+    def stop(self):
+        self.fighting = False
 
+    def resume(self):
+        self.fighting = True
+        if not self.working:
+            self.working = True
+            self.loop()
 
-            counter += 1
+    def dump(self):
+        with open('blind_bot_log.pickle', 'wb') as file:
+            pickle.dump(self.log, file)
 
+    def loop(self):
+        while self.fighting:
+            if not self.keybd_switch.get_key_state(self.switch):
+                time.sleep(0.05)
+                continue
 
+            if self.counter % DUMP_SIZE == 0:
+                self.dump()
 
+            distance = self.get_players_dist()
+            my_name, vs_name = self.get_players_names()
+            my_hp, vs_hp = self.get_players_hps()
 
+            next_combo = self.next_combo(distance, my_name, vs_name)
+            now = datetime.datetime.now()
+
+            hp, combo = self.combo_effectiveness(next_combo)
+            self.log.append({
+                'diff_hp': hp,
+                'combo': combo,
+                'my_name': my_name,
+                'vs_name': vs_name,
+                'distance': distance,
+                'my_hp': my_hp,
+                'vs_hp': vs_hp,
+                'timestamp': now,
+                'id': self.id
+            })
+            self.id += 1
+        self.working = True
+        self.dump()
