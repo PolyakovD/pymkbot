@@ -4,14 +4,12 @@ import pymkbot.keyboard.directkeys as keys
 
 
 class Strategy:
-    def __init__(self, player, keybd_switch):
+    def __init__(self, player, keybd_switch, *, key_switch=None):
         self._key_bindings = keys.keyboard[player]
         self._player = player
         self._released = True
         self._keybd_switch = keybd_switch
-
-    def do_action(self):
-        pass
+        self._key_switch = key_switch
 
     def release(self):
         if not self._released:
@@ -20,10 +18,11 @@ class Strategy:
     def _release(self):
         raise NotImplementedError
 
-    def run_strategy(self, switch):
-        while True:
-            if self._keybd_switch.get_key_state(switch):
-                self.do_action()
-            else:
-                self.release()
-            time.sleep(0.05)
+    def prepare(self):
+        pass
+
+    def stop(self):
+        raise NotImplementedError
+
+    def resume(self):
+        raise NotImplementedError

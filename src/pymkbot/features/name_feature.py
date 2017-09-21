@@ -52,7 +52,7 @@ class NameFeature(Feature):
         #
         return names
 
-    def _calibrate(self):
+    def calibrate(self):
         if self._current_image is None:
             return
         img = self._current_image.copy()

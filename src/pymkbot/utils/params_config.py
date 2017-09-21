@@ -4,7 +4,7 @@ PARAMS_CONFIG_SCHEMA = {
     'nameplates-path': '../../data/names',
     'debug-image-size': [320, 240],
     'moves-lib-path': '../../data/moves',
-    'menu-button': '../../data/button',
+    'menu-button-path': '../../data/button',
     'templates-path': '../../data/templates'
 }
 
