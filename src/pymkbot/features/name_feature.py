@@ -6,8 +6,10 @@ import os
 
 from pymkbot.features.feature import Feature
 
-ROI_0 = np.array([9, 27, 88, 35])
-ROI_1 = np.array([232, 27, 311, 35])
+# ROI_0 = np.array([9, 27, 88, 35])
+# ROI_1 = np.array([232, 27, 311, 35])
+ROI_0 = np.array([8, 24, 87, 32])
+ROI_1 = np.array([231, 24, 310, 32])
 
 
 class NameFeature(Feature):
@@ -45,6 +47,9 @@ class NameFeature(Feature):
     def get_value(self, image):
         self._current_image = image.copy()
         names = self._get_names(image)
+        #
+        print(names)
+        #
         return names
 
     def _calibrate(self):
