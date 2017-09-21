@@ -35,8 +35,8 @@ if __name__ == "__main__":
     time.sleep(1)
     strategy2 = RandomMoveStrategy(1, keybd_switch)
 
-    moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
-    moves_serializer.load()
+    # moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
+    # moves_serializer.load()
 
     keybd_shortcuts = KeyPressCallback()
     # keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)

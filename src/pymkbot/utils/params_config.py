@@ -33,7 +33,7 @@ class ParamsConfig:
         self.nameplates_path = nameplates_path
         self.debug_image_size = debug_image_size
         self.moves_lib_path = moves_lib_path
-        self.nameplates_path = templates_path
+        self.templates_path = templates_path
 
 
 DEFAULT_PARAMS_CONFIG = ParamsConfig()
