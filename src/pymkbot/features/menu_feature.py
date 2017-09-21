@@ -31,6 +31,5 @@ class MenuFeature(Feature):
                 return name
         return 'not_menu'
 
-
     def get_name(self):
         return 'menu_feature'

@@ -47,9 +47,6 @@ class NameFeature(Feature):
     def get_value(self, image):
         self._current_image = image.copy()
         names = self._get_names(image)
-        #
-        print(names)
-        #
         return names
 
     def calibrate(self):

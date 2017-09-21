@@ -25,7 +25,8 @@ if __name__ == "__main__":
     params_config = read_config('config.yml')
 
     name_feature = NameFeature(params_config.nameplates_path)
-    create_image_provider([PositionFeature(name_feature), HPFeature(), name_feature],\
+    menu_feature = MenuFeature(params_config.templates_path)
+    create_image_provider([PositionFeature(name_feature), HPFeature(), name_feature, menu_feature],
                           params_config.debug_image_size, params_config.menu_button_path)
 
     # strategy1 = RandomMoveTeacherStrategy(player=0)
@@ -47,9 +48,6 @@ if __name__ == "__main__":
     keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
     # keybd_shortcuts.add_key_callback(0x5A, name_feature._calibrate)
     keybd_shortcuts.add_key_callback(0x5A, lambda: AsyncImageProvider.correct_grabber_region())
-
-    strategy1_executor = AsyncExecutor()
-    strategy1_executor.call_soon_threadsafe(strategy1.run_strategy, SCROLL_LOCK)
 
     #strategy1_executor = AsyncExecutor()
     #strategy1_executor.call_soon_threadsafe(strategy1.run_strategy, SCROLL_LOCK)
