@@ -8,10 +8,10 @@ import win32gui, win32ui, win32con, win32api
 
 
 class AsyncImageGrabber:
-    def __init__(self, region=None, debug_image_size=None, button_path=None):
+    def __init__(self, region=None, debug_image_size=None, menu_button_path=None):
         self._hwin = win32gui.GetDesktopWindow()
         self._button_image = None
-        self._button_path = button_path
+        self._menu_button_path = menu_button_path
         self._load_image()
 
         if region:
@@ -36,8 +36,8 @@ class AsyncImageGrabber:
         self._show_image = True
 
     def _load_image(self):
-        image_name = os.listdir(self._button_path)[0]
-        self._button_image = cv2.imread(self._button_path + '\\' + image_name)
+        image_name = os.listdir(self._menu_button_path)[0]
+        self._button_image = cv2.imread(self._menu_button_path + '\\' + image_name)
 
     @property
     def image(self):
@@ -96,5 +96,4 @@ class AsyncImageGrabber:
         loc = np.where(res >= threshold)
         if len(loc[0]) >= 1:
             loc = cv2.minMaxLoc(res)[3]
-            self._offset[0] += (loc[0] - 86)
-            self._offset[1] += (loc[1] - 174)
+            self._offset = self._offset[0] + (loc[0] - 86), self._offset[1] + (loc[1] - 174)

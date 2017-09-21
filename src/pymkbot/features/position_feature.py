@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from numpy.ma import absolute, nonzero
 
+from pymkbot.features import name_feature
 from pymkbot.features.feature import Feature
 from pymkbot.utils.data.histogram_analyzer import HistogramAnalyzer
 from pymkbot.utils.data.image_utils import make_kmeans, get_class_mask, get_histogram
@@ -15,6 +16,7 @@ class PositionFeature(Feature):
         return "position_feature"
 
     def __init__(self, name_feature, debug_mode=True):
+        self.base_image = None
         self._debug = debug_mode
         self.num_pixels = 0
         self.histogram0 = None
@@ -67,6 +69,7 @@ class PositionFeature(Feature):
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
 
+    # def _debug_output_2(self, image, order):
     def get_value(self, image):
         first_name, second_name = self.name_feature.get_value(image)
         if first_name is None or second_name is None:

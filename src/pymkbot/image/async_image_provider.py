@@ -39,9 +39,10 @@ class AsyncImageProvider:
     _image_grabber = None
 
     @classmethod
-    def launch(cls, *, debug_image_size=None):
+    def launch(cls, *, debug_image_size=None, menu_button_path=None):
         assert not cls._running
-        cls._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270), debug_image_size=debug_image_size)
+        cls._image_grabber = AsyncImageGrabber(region=(0, 30, 320, 270), debug_image_size=debug_image_size,\
+                                               menu_button_path=menu_button_path)
         cls._image_grabber.set_callback(cls._on_grabber_update)
         cls._image_grabber.begin_recording()
 
@@ -50,6 +51,13 @@ class AsyncImageProvider:
         current_image = cls._image_grabber.image
         for consumer in cls._consumers.values():
             consumer.update(current_image)
+
+    #
+    @classmethod
+    def correct_grabber_region(cls):
+        cls._image_grabber.calibrate()
+    #
+
 
     @classmethod
     def register_consumer(cls, name, consumer_callback):
