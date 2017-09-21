@@ -1,5 +1,6 @@
 import time
 
+from pymkbot.features.menu_feature import MenuFeature
 from pymkbot.features.hp_feature import HPFeature
 from pymkbot.features.name_feature import NameFeature
 from pymkbot.features.position_feature import PositionFeature
@@ -22,7 +23,10 @@ if __name__ == "__main__":
     params_config = read_config('config.yml')
 
     name_feature = NameFeature(params_config.nameplates_path)
-    create_image_provider([PositionFeature(name_feature), HPFeature(), name_feature], params_config.debug_image_size)
+    menu_feature = MenuFeature(params_config.templates_path)
+    create_image_provider([PositionFeature(name_feature), HPFeature(), name_feature, menu_feature], params_config.debug_image_size)
+
+    #image_provider.register_consumer(name_parser.process_image)
 
     # image_provider.register_consumer(name_parser.process_image)
 
@@ -31,8 +35,8 @@ if __name__ == "__main__":
     time.sleep(1)
     strategy2 = RandomMoveStrategy(1, keybd_switch)
 
-    # moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
-    # moves_serializer.load()
+    moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
+    moves_serializer.load()
 
     keybd_shortcuts = KeyPressCallback()
     # keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)

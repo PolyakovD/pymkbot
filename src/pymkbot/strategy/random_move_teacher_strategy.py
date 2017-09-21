@@ -17,7 +17,7 @@ class RandomMoveTeacherStrategy(Strategy):
         self._strat_len = 0.0
         self._memory = []
         self._good_moves = []
-        self._random_move_weight = 30
+        self._random_move_weight = 10
         #self._random_movement_weight = 10
 
 

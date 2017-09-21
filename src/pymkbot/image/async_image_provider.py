@@ -12,16 +12,14 @@ class AsyncConsumer:
         self._current_result = None
 
     def _process(self):
-        self._working = True
-        self._updated = False
-        img = self._current_image.copy()
-        res = self._callback(img)
-        if res is not None:
-            self._current_result = res
-        if self._updated:
-            self._process()
-        else:
-            self._working = False
+        while self._updated:
+            self._working = True
+            self._updated = False
+            img = self._current_image.copy()
+            res = self._callback(img)
+            if res is not None:
+                self._current_result = res
+        self._working = False
 
     def update(self, current_image):
         self._current_image = current_image
