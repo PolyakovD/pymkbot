@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import os
 
 from pymkbot.utils.async_executor import AsyncExecutor
 
@@ -7,8 +8,11 @@ import win32gui, win32ui, win32con, win32api
 
 
 class AsyncImageGrabber:
-    def __init__(self, region=None, debug_image_size=None):
+    def __init__(self, region=None, debug_image_size=None, button_path=None):
         self._hwin = win32gui.GetDesktopWindow()
+        self._button_image = None
+        self._button_path = button_path
+        self._load_image()
 
         if region:
             left, top, x2, y2 = region
@@ -30,6 +34,10 @@ class AsyncImageGrabber:
             self._debug_image_size = self._size
         self._current_img = None
         self._show_image = True
+
+    def _load_image(self):
+        image_name = os.listdir(self._button_path)[0]
+        self._button_image = cv2.imread(self._button_path + '\\' + image_name)
 
     @property
     def image(self):
@@ -73,3 +81,20 @@ class AsyncImageGrabber:
 
     def set_callback(self, callback):
         self._callback = callback
+
+    def calibrate(self):
+        if self._current_img is None:
+            return
+        img = self._current_img.copy()
+
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        template = cv2.cvtColor(self._button_image, cv2.COLOR_BGR2GRAY)
+        w, h = template.shape[::-1]
+
+        res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+        threshold = 0.9
+        loc = np.where(res >= threshold)
+        if len(loc[0]) >= 1:
+            loc = cv2.minMaxLoc(res)[3]
+            self._offset[0] += (loc[0] - 86)
+            self._offset[1] += (loc[1] - 174)
