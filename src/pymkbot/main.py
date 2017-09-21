@@ -6,6 +6,7 @@ from pymkbot.features.name_feature import NameFeature
 from pymkbot.features.position_feature import PositionFeature
 from pymkbot.image.async_image_provider import AsyncImageProvider
 from pymkbot.keyboard.key_state_getter import KeyStateGetter, CAPS_LOCK, SCROLL_LOCK, KeyPressCallback
+from pymkbot.strategy.metastrategy import Metastrategy
 from pymkbot.strategy.random_move_strategy import RandomMoveStrategy
 from pymkbot.strategy.random_move_teacher_strategy import RandomMoveTeacherStrategy
 from pymkbot.utils.good_moves_serializer import GoodMovesSerializer
@@ -30,23 +31,31 @@ if __name__ == "__main__":
     # strategy1 = RandomMoveTeacherStrategy(player=0)
     # time.sleep(1)
     keybd_switch = KeyStateGetter()
-    strategy1 = RandomMoveStrategy(0, keybd_switch)
+    strategy1 = RandomMoveTeacherStrategy(0, keybd_switch, key_switch=SCROLL_LOCK)
     time.sleep(1)
-    strategy2 = RandomMoveStrategy(1, keybd_switch)
+    strategy2 = RandomMoveStrategy(1, keybd_switch, key_switch=CAPS_LOCK)
 
-    # moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
-    # moves_serializer.load()
+    metastrategy = Metastrategy()
+    metastrategy.run()
+    metastrategy.add_strategy(strategy1)
+
+
+    moves_serializer = GoodMovesSerializer(strategy1, params_config.moves_lib_path)
+    moves_serializer.load()
 
     keybd_shortcuts = KeyPressCallback()
-    # keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
+    keybd_shortcuts.add_key_callback(0x58, moves_serializer.on_save_coomand)
     # keybd_shortcuts.add_key_callback(0x5A, name_feature._calibrate)
     keybd_shortcuts.add_key_callback(0x5A, lambda: AsyncImageProvider.correct_grabber_region())
 
     strategy1_executor = AsyncExecutor()
     strategy1_executor.call_soon_threadsafe(strategy1.run_strategy, SCROLL_LOCK)
 
-    strategy2_executor = AsyncExecutor()
-    strategy2_executor.call_soon_threadsafe(strategy2.run_strategy, CAPS_LOCK)
+    #strategy1_executor = AsyncExecutor()
+    #strategy1_executor.call_soon_threadsafe(strategy1.run_strategy, SCROLL_LOCK)
+
+    #strategy2_executor = AsyncExecutor()
+    #strategy2_executor.call_soon_threadsafe(strategy2.run_strategy, CAPS_LOCK)
 
     while True:
         time.sleep(0.05)

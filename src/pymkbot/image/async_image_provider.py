@@ -1,3 +1,5 @@
+import copy
+
 from pymkbot.image.async_image_grabber import AsyncImageGrabber
 from pymkbot.utils.async_executor import AsyncExecutor
 
@@ -30,7 +32,7 @@ class AsyncConsumer:
 
     @property
     def result(self):
-        return self._current_result.copy()
+        return copy.copy(self._current_result)
 
 
 class AsyncImageProvider:

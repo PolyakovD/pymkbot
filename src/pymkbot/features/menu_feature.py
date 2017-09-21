@@ -33,4 +33,4 @@ class MenuFeature(Feature):
 
 
     def get_name(self):
-        return 'conscience_feature'
+        return 'menu_feature'

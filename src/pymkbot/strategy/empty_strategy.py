@@ -2,8 +2,11 @@ from pymkbot.strategy.strategy import Strategy
 
 
 class EmptyStrategy(Strategy):
-    def do_action(self):
+    def _release(self):
         pass
 
-    def _release(self):
+    def stop(self):
+        pass
+
+    def resume(self):
         pass
