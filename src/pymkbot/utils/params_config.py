@@ -30,7 +30,7 @@ class ParamsConfig:
                  nameplates_path=None,
                  debug_image_size=None,
                  moves_lib_path=None,
-                 menu_button_path=None
+                 menu_button_path=None,
                  templates_path=None
                  ):
         self.nameplates_path = nameplates_path
